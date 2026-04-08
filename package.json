@@ -1,0 +1,15 @@
+{
+  "name": "auto-mac-obsidian",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=main.js --external:obsidian --external:electron --format=cjs --platform=node",
+    "dev": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.21.0",
+    "obsidian": "^1.7.2",
+    "typescript": "^5.4.0"
+  }
+}
