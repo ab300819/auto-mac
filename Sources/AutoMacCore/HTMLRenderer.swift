@@ -168,23 +168,22 @@ private struct MailHTMLWalker: MarkupWalker {
     mutating func visitTable(_ table: Table) -> () {
         html += "<table style=\"\(Style.table)\">\n"
         // Head
-        if let head = table.head as? Table.Head {
-            html += "<thead><tr>\n"
-            for cell in head.children {
-                html += "<th style=\"\(Style.th)\">"
-                if let tableCell = cell as? Table.Cell {
-                    for child in tableCell.children {
-                        visit(child)
-                    }
+        let head = table.head
+        html += "<thead><tr>\n"
+        for cell in head.children {
+            html += "<th style=\"\(Style.th)\">"
+            if let tableCell = cell as? Table.Cell {
+                for child in tableCell.children {
+                    visit(child)
                 }
-                html += "</th>\n"
             }
-            html += "</tr></thead>\n"
+            html += "</th>\n"
         }
+        html += "</tr></thead>\n"
         // Body
         html += "<tbody>\n"
-        if let body = table.body as? Table.Body {
-            for row in body.children {
+        let body = table.body
+        for row in body.children {
                 html += "<tr>\n"
                 if let tableRow = row as? Table.Row {
                     for cell in tableRow.children {
@@ -198,10 +197,10 @@ private struct MailHTMLWalker: MarkupWalker {
                     }
                 }
                 html += "</tr>\n"
-            }
         }
         html += "</tbody></table>\n"
     }
+
 
     // MARK: - Inline elements
 
