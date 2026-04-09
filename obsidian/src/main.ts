@@ -18,7 +18,7 @@ export default class AutoMacPlugin extends Plugin {
       id: 'draft',
       name: 'Send to Mail.app draft',
       checkCallback: (checking: boolean) => {
-        const file = this.getActiveEmailFile();
+        const file = this.getActiveMarkdownFile();
         if (!file) return false;
         if (!checking) this.executeDraft(file);
         return true;
@@ -29,7 +29,7 @@ export default class AutoMacPlugin extends Plugin {
       id: 'dry-run',
       name: 'Dry run (show parsed result)',
       checkCallback: (checking: boolean) => {
-        const file = this.getActiveEmailFile();
+        const file = this.getActiveMarkdownFile();
         if (!file) return false;
         if (!checking) this.executeDryRun(file);
         return true;
@@ -49,11 +49,11 @@ export default class AutoMacPlugin extends Plugin {
 
     // Ribbon icons
     this.addRibbonIcon('mail', 'Auto Mac: Send to Mail.app draft', () => {
-      const file = this.getActiveEmailFile();
+      const file = this.getActiveMarkdownFile();
       if (file) {
         this.executeDraft(file);
       } else {
-        new Notice('Current file is not an auto-mac email.');
+        new Notice('No active Markdown file.');
       }
     });
 
@@ -153,8 +153,12 @@ export default class AutoMacPlugin extends Plugin {
 
   private handleResult(result: CliResult): void {
     if (result.status === 'ok') {
-      const subject = (result.meta?.subject as string) || '';
-      new Notice(`✓ Mail.app 草稿已创建 — ${subject}`);
+      if (result.meta?.body_only) {
+        new Notice('✓ Mail.app 草稿已创建（仅正文）。建议添加 frontmatter 设置 to 和 subject 字段。');
+      } else {
+        const subject = (result.meta?.subject as string) || '';
+        new Notice(`✓ Mail.app 草稿已创建 — ${subject}`);
+      }
     } else {
       new Notice(`auto-mac error: ${result.error} [${result.code}]`);
     }

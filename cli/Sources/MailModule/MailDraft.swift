@@ -60,13 +60,38 @@ struct MailDraft: AsyncParsableCommand {
         let result: FrontmatterParser.ParseResult
         do {
             result = try parser.parse(content)
-        } catch let error as AutoMacError {
-            if json {
-                print(OutputFormatter.jsonError(command: "mail.draft", error: error, file: file))
-            } else {
-                printError(error.localizedDescription)
+        } catch is AutoMacError {
+            // 无 frontmatter 或字段不全：全文作为正文，收件人/主题留空
+            let renderer = HTMLRenderer()
+            let htmlContent = renderer.renderEmail(content)
+            let bridge = MailBridge()
+            do {
+                try bridge.createDraft(
+                    to: [], cc: [], bcc: [],
+                    subject: "",
+                    htmlContent: htmlContent,
+                    sender: account
+                )
+            } catch let error as AutoMacError {
+                if json {
+                    print(OutputFormatter.jsonError(command: "mail.draft", error: error, file: file))
+                } else {
+                    printError(error.localizedDescription)
+                }
+                throw ExitCode.failure
             }
-            throw ExitCode.failure
+
+            if json {
+                print(OutputFormatter.jsonSuccess(
+                    command: "mail.draft",
+                    file: file,
+                    meta: ["body_only": true]
+                ))
+            } else {
+                print("✓ Mail.app 草稿已创建（仅正文）")
+                print("  提示: 在 frontmatter 中添加 to 和 subject 字段可自动填充收件人和主题")
+            }
+            return
         }
 
         let senderAccount = account ?? result.metadata.account

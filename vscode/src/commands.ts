@@ -53,13 +53,19 @@ function getActiveFilePath(): string | undefined {
 function handleResult(result: CliResult, mode: 'draft' | 'dryRun'): void {
   if (result.status === 'ok') {
     const meta = result.meta;
-    const subject = (meta?.subject as string) || '';
-    const toList = meta?.to as Array<{ name?: string; email: string }> | undefined;
-    const toStr = toList?.map((a) => a.name || a.email).join(', ') || '';
+    const bodyOnly = meta?.body_only as boolean | undefined;
 
-    if (mode === 'draft') {
+    if (bodyOnly) {
+      vscode.window.showInformationMessage(
+        '✓ Mail.app 草稿已创建（仅正文）。建议添加 frontmatter 设置 to 和 subject 字段。'
+      );
+    } else if (mode === 'draft') {
+      const subject = (meta?.subject as string) || '';
       vscode.window.showInformationMessage(`✓ Mail.app 草稿已创建 — ${subject}`);
     } else {
+      const subject = (meta?.subject as string) || '';
+      const toList = meta?.to as Array<{ name?: string; email: string }> | undefined;
+      const toStr = toList?.map((a) => a.name || a.email).join(', ') || '';
       vscode.window.showInformationMessage(`📧 ${subject} → ${toStr}`);
     }
   } else {
