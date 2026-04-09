@@ -32,7 +32,7 @@
       {
         "command": "auto-mac.notesCreate",
         "title": "Auto Mac: Send to Apple Notes",
-        "icon": "$(note)"
+        "icon": "$(notebook)"
       }
     ],
     "menus": {
@@ -63,6 +63,7 @@
   "scripts": {
     "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "watch": "npm run build -- --watch",
+    "prepackage": "npm run build",
     "package": "vsce package --no-dependencies --skip-license --baseContentUrl https://github.com/anthropics/auto-mac/tree/main/vscode"
   },
   "devDependencies": {
