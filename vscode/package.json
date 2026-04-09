@@ -1,7 +1,7 @@
 {
   "name": "auto-mac",
   "displayName": "Auto Mac",
-  "description": "Markdown to Mail.app draft — macOS automation from your editor",
+  "description": "macOS automation — Markdown to Mail.app draft & Apple Notes",
   "version": "0.1.0",
   "publisher": "auto-mac",
   "engines": {
@@ -26,6 +26,11 @@
       {
         "command": "auto-mac.preview",
         "title": "Auto Mac: Preview Email"
+      },
+      {
+        "command": "auto-mac.notesCreate",
+        "title": "Auto Mac: Send to Apple Notes",
+        "icon": "$(note)"
       }
     ],
     "menus": {
@@ -33,6 +38,11 @@
         {
           "command": "auto-mac.draft",
           "when": "resourceLangId == markdown && auto-mac.isEmailFile",
+          "group": "navigation"
+        },
+        {
+          "command": "auto-mac.notesCreate",
+          "when": "resourceLangId == markdown",
           "group": "navigation"
         }
       ]

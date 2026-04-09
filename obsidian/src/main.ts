@@ -36,13 +36,33 @@ export default class AutoMacPlugin extends Plugin {
       },
     });
 
-    // Ribbon icon
+    this.addCommand({
+      id: 'notes-create',
+      name: 'Send to Apple Notes',
+      checkCallback: (checking: boolean) => {
+        const file = this.getActiveMarkdownFile();
+        if (!file) return false;
+        if (!checking) this.executeNotesCreate(file);
+        return true;
+      },
+    });
+
+    // Ribbon icons
     this.addRibbonIcon('mail', 'Auto Mac: Send to Mail.app draft', () => {
       const file = this.getActiveEmailFile();
       if (file) {
         this.executeDraft(file);
       } else {
         new Notice('Current file is not an auto-mac email.');
+      }
+    });
+
+    this.addRibbonIcon('sticky-note', 'Auto Mac: Send to Apple Notes', () => {
+      const file = this.getActiveMarkdownFile();
+      if (file) {
+        this.executeNotesCreate(file);
+      } else {
+        new Notice('No active Markdown file.');
       }
     });
 
@@ -57,11 +77,23 @@ export default class AutoMacPlugin extends Plugin {
             .setIcon('mail')
             .onClick(() => this.executeDraft(file));
         });
+
+        menu.addItem((item) => {
+          item
+            .setTitle('Auto Mac: Send to Apple Notes')
+            .setIcon('sticky-note')
+            .onClick(() => this.executeNotesCreate(file));
+        });
       })
     );
 
     // Settings
     this.addSettingTab(new AutoMacSettingTab(this.app, this));
+  }
+
+  private getActiveMarkdownFile(): TFile | null {
+    const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+    return view?.file ?? null;
   }
 
   private getActiveEmailFile(): TFile | null {
@@ -96,6 +128,24 @@ export default class AutoMacPlugin extends Plugin {
         this.settings.cliPath || undefined
       );
       this.handleResult(result);
+    } catch (err) {
+      new Notice(`auto-mac: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  private async executeNotesCreate(file: TFile): Promise<void> {
+    const filePath = (this.app.vault.adapter as any).getBasePath() + '/' + file.path;
+    try {
+      const result = await runCommand(
+        ['notes', 'create', filePath, '--json'],
+        this.settings.cliPath || undefined
+      );
+      if (result.status === 'ok') {
+        const title = (result.meta?.title as string) || '';
+        new Notice(`✓ 已导入到 Apple Notes — ${title}`);
+      } else {
+        new Notice(`auto-mac error: ${result.error} [${result.code}]`);
+      }
     } catch (err) {
       new Notice(`auto-mac: ${err instanceof Error ? err.message : String(err)}`);
     }
