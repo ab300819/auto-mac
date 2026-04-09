@@ -1,0 +1,62 @@
+{
+  "name": "auto-mac",
+  "displayName": "Auto Mac",
+  "description": "Markdown to Mail.app draft — macOS automation from your editor",
+  "version": "0.1.0",
+  "publisher": "auto-mac",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "auto-mac.draft",
+        "title": "Auto Mac: Send to Mail.app Draft",
+        "icon": "$(mail)"
+      },
+      {
+        "command": "auto-mac.dryRun",
+        "title": "Auto Mac: Dry Run (Show Parsed Result)"
+      },
+      {
+        "command": "auto-mac.preview",
+        "title": "Auto Mac: Preview Email"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "auto-mac.draft",
+          "when": "resourceLangId == markdown && auto-mac.isEmailFile",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Auto Mac",
+      "properties": {
+        "auto-mac.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to auto-mac CLI binary. Leave empty for auto-detection."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "watch": "npm run build -- --watch",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.0"
+  }
+}
