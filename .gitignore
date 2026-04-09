@@ -1,0 +1,18 @@
+# Swift
+cli/.build/
+cli/.swiftpm/
+
+# Node
+node_modules/
+
+# Build output
+vscode/out/
+vscode/*.vsix
+obsidian/main.js
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
