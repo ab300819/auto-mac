@@ -1,5 +1,6 @@
 import ArgumentParser
 import MailModule
+import NotesModule
 
 @main
 struct AutoMac: AsyncParsableCommand {
@@ -9,6 +10,7 @@ struct AutoMac: AsyncParsableCommand {
         version: "0.1.0",
         subcommands: [
             MailCommand.self,
+            NotesCommand.self,
         ]
     )
 }

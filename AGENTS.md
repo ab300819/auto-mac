@@ -2,7 +2,7 @@
 
 # Auto Mac
 
-可扩展 macOS 自动化平台（Monorepo）。当前模块：Markdown → Mail.app 草稿。
+可扩展 macOS 自动化平台（Monorepo）。当前模块：Mail（Markdown → Mail.app 草稿）、Notes（Markdown → Apple Notes）。
 
 ## 技术栈
 
@@ -15,6 +15,7 @@
 - Markdown + YAML frontmatter 作为统一邮件输入格式
 - CLI 为核心，编辑器插件通过调用 CLI 二进制实现功能（JSON 通信）
 - AppleScript 桥接 Mail.app（osascript 子进程）
+- `open -a Notes` 桥接 Apple Notes（Notes 原生 Markdown 渲染，macOS 26+）
 
 ## 领域术语
 
@@ -23,6 +24,7 @@
 | frontmatter | Markdown 文件头部 YAML 元数据块（to/subject/cc/bcc/account） |
 | draft | Mail.app 草稿，CLI 只创建草稿不发送 |
 | dry-run | 仅解析验证，不实际操作 Mail.app |
+| notes create | 将 Markdown 导入 Apple Notes（`open -a Notes`，原生渲染） |
 
 ## 命令
 

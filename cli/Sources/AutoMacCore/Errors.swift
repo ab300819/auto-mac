@@ -5,6 +5,7 @@ public enum AutoMacError: LocalizedError {
     case parse(ParseError)
     case render(String)
     case mail(MailError)
+    case notes(NotesError)
 
     public enum ParseError {
         case missingFrontmatter
@@ -17,6 +18,14 @@ public enum AutoMacError: LocalizedError {
     public enum MailError {
         case notInstalled
         case accountNotFound(requested: String, available: [String])
+        case scriptError(String)
+    }
+
+    public enum NotesError {
+        case notInstalled
+        case accountNotFound(requested: String, available: [String])
+        case folderNotFound(String)
+        case noteNotFound(String)
         case scriptError(String)
     }
 
@@ -35,6 +44,14 @@ public enum AutoMacError: LocalizedError {
             case .notInstalled: return "E005"
             case .accountNotFound: return "E006"
             case .scriptError: return "E007"
+            }
+        case .notes(let e):
+            switch e {
+            case .notInstalled: return "E010"
+            case .accountNotFound: return "E011"
+            case .folderNotFound: return "E012"
+            case .noteNotFound: return "E013"
+            case .scriptError: return "E014"
             }
         }
     }
@@ -55,6 +72,18 @@ public enum AutoMacError: LocalizedError {
             case .notInstalled: return "Mail.app 未安装或无法启动"
             case .accountNotFound(let req, let avail):
                 return "发件账户 '\(req)' 不存在。可用账户：\(avail.joined(separator: ", "))"
+            case .scriptError(let msg):
+                return "AppleScript 执行失败：\(msg)"
+            }
+        case .notes(let e):
+            switch e {
+            case .notInstalled: return "Notes.app 未安装或无法启动"
+            case .accountNotFound(let req, let avail):
+                return "备忘录账户 '\(req)' 不存在。可用账户：\(avail.joined(separator: ", "))"
+            case .folderNotFound(let name):
+                return "备忘录文件夹 '\(name)' 不存在"
+            case .noteNotFound(let id):
+                return "备忘录笔记 '\(id)' 不存在"
             case .scriptError(let msg):
                 return "AppleScript 执行失败：\(msg)"
             }

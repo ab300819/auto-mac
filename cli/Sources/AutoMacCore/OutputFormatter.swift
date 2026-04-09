@@ -23,6 +23,9 @@ public enum OutputFormatter {
         if case .mail(.accountNotFound(_, let available)) = error {
             result["available_accounts"] = available
         }
+        if case .notes(.accountNotFound(_, let available)) = error {
+            result["available_accounts"] = available
+        }
         return toJSON(result)
     }
 

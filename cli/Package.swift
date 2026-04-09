@@ -21,6 +21,7 @@ let package = Package(
             dependencies: [
                 "AutoMacCore",
                 "MailModule",
+                "NotesModule",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
@@ -38,6 +39,13 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
+        .target(
+            name: "NotesModule",
+            dependencies: [
+                "AutoMacCore",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ]
+        ),
         .testTarget(
             name: "AutoMacCoreTests",
             dependencies: ["AutoMacCore"]
@@ -45,6 +53,10 @@ let package = Package(
         .testTarget(
             name: "MailModuleTests",
             dependencies: ["MailModule"]
+        ),
+        .testTarget(
+            name: "NotesModuleTests",
+            dependencies: ["NotesModule"]
         ),
     ]
 )
