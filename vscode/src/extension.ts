@@ -2,10 +2,9 @@ import * as vscode from 'vscode';
 import { resetCliCache } from './cli';
 import { draftCommand, dryRunCommand, previewCommand } from './commands';
 import { notesCreateCommand } from './notesCommands';
-import { initStatusBar } from './statusBar';
+import { initActionBar } from './sidebarProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
-  // Register commands
   context.subscriptions.push(
     vscode.commands.registerCommand('auto-mac.draft', draftCommand),
     vscode.commands.registerCommand('auto-mac.dryRun', dryRunCommand),
@@ -13,10 +12,8 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('auto-mac.notesCreate', notesCreateCommand)
   );
 
-  // Status bar
-  initStatusBar(context);
+  initActionBar(context);
 
-  // Reset CLI cache when settings change
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('auto-mac.cliPath')) {

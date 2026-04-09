@@ -2,7 +2,7 @@
   "name": "auto-mac",
   "displayName": "Auto Mac",
   "description": "macOS automation — Markdown to Mail.app draft & Apple Notes",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "publisher": "auto-mac",
   "engines": {
     "vscode": "^1.85.0"
@@ -35,20 +35,6 @@
         "icon": "$(notebook)"
       }
     ],
-    "menus": {
-      "editor/title": [
-        {
-          "command": "auto-mac.draft",
-          "when": "resourceLangId == markdown && auto-mac.isEmailFile",
-          "group": "navigation"
-        },
-        {
-          "command": "auto-mac.notesCreate",
-          "when": "resourceLangId == markdown",
-          "group": "navigation"
-        }
-      ]
-    },
     "configuration": {
       "title": "Auto Mac",
       "properties": {
