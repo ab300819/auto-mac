@@ -7,7 +7,9 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "activationEvents": [
     "onLanguage:markdown"
   ],
@@ -61,11 +63,12 @@
   "scripts": {
     "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "watch": "npm run build -- --watch",
-    "package": "vsce package"
+    "package": "vsce package --no-dependencies --skip-license --baseContentUrl https://github.com/anthropics/auto-mac/tree/main/vscode"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.21.0",
     "typescript": "^5.4.0"
   }
