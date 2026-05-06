@@ -33,6 +33,11 @@
         "command": "auto-mac.notesCreate",
         "title": "Auto Mac: Send to Apple Notes",
         "icon": "$(notebook)"
+      },
+      {
+        "command": "auto-mac.notesImport",
+        "title": "Auto Mac: Import from Apple Notes",
+        "icon": "$(cloud-download)"
       }
     ],
     "configuration": {

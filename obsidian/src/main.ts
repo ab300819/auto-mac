@@ -1,5 +1,6 @@
 import { Plugin, MarkdownView, Notice, PluginSettingTab, App, Setting, TFile } from 'obsidian';
 import { runCommand, resetCliCache, CliResult } from './cli';
+import { NotesImportModal } from './notesImportModal';
 
 interface AutoMacSettings {
   cliPath: string;
@@ -50,6 +51,12 @@ export default class AutoMacPlugin extends Plugin {
         if (!checking) this.executeNotesCreate(file);
         return true;
       },
+    });
+
+    this.addCommand({
+      id: 'notes-import',
+      name: 'Import from Apple Notes',
+      callback: () => this.executeNotesImport(),
     });
 
     // Ribbon icons
@@ -138,6 +145,61 @@ export default class AutoMacPlugin extends Plugin {
     }
   }
 
+  private async executeNotesImport(): Promise<void> {
+    let listResult: CliResult;
+    try {
+      listResult = await runCommand(
+        ['notes', 'export', '--list', '--json'],
+        this.settings.cliPath || undefined,
+      );
+    } catch (err) {
+      new Notice(`auto-mac: ${err instanceof Error ? err.message : String(err)}`);
+      return;
+    }
+
+    if (listResult.status !== 'ok' || !listResult.notes) {
+      new Notice(`auto-mac: ${listResult.error || '加载笔记失败'}`);
+      return;
+    }
+
+    if (listResult.notes.length === 0) {
+      new Notice('Apple Notes 中没有笔记');
+      return;
+    }
+
+    new NotesImportModal(this.app, listResult.notes, async (selected) => {
+      let exportResult: CliResult;
+      try {
+        exportResult = await runCommand(
+          ['notes', 'export', '--id', selected.id, '--json'],
+          this.settings.cliPath || undefined,
+        );
+      } catch (err) {
+        new Notice(`auto-mac: ${err instanceof Error ? err.message : String(err)}`);
+        return;
+      }
+
+      if (exportResult.status !== 'ok' || !exportResult.note) {
+        new Notice(`auto-mac: ${exportResult.error || '导出失败'}`);
+        return;
+      }
+
+      const sanitized = sanitizeFilename(exportResult.note.title);
+      const fileName = `${sanitized}.md`;
+      let filePath = fileName;
+      let counter = 1;
+      while (this.app.vault.getAbstractFileByPath(filePath)) {
+        filePath = `${sanitized} (${counter}).md`;
+        counter++;
+      }
+
+      const newFile = await this.app.vault.create(filePath, exportResult.note.markdown);
+      const leaf = this.app.workspace.getLeaf(false);
+      await leaf.openFile(newFile);
+      new Notice(`✓ 已导入 ${exportResult.note.title}`);
+    }).open();
+  }
+
   private async executeNotesCreate(file: TFile): Promise<void> {
     const filePath = (this.app.vault.adapter as any).getBasePath() + '/' + file.path;
     try {
@@ -177,6 +239,10 @@ export default class AutoMacPlugin extends Plugin {
     await this.saveData(this.settings);
     resetCliCache();
   }
+}
+
+function sanitizeFilename(title: string): string {
+  return title.replace(/[\\/:*?"<>|]/g, '-').trim() || 'Untitled';
 }
 
 class AutoMacSettingTab extends PluginSettingTab {

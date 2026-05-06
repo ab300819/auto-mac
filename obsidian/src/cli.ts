@@ -13,6 +13,8 @@ export interface CliResult {
   code?: string;
   error?: string;
   accounts?: Array<{ name: string; email: string }>;
+  notes?: Array<{ id: string; title: string; snippet: string; modified: string }>;
+  note?: { id: string; title: string; markdown: string };
 }
 
 let cachedCliPath: string | undefined;
