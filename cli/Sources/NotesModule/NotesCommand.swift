@@ -7,6 +7,7 @@ public struct NotesCommand: AsyncParsableCommand {
         abstract: "备忘录 — 从 Markdown 文件创建 Apple Notes 笔记",
         subcommands: [
             NotesCreate.self,
+            NotesExport.self,
         ],
         defaultSubcommand: nil
     )
