@@ -5,6 +5,11 @@ import { notesCreateCommand } from './notesCommands';
 import { initActionBar } from './sidebarProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
+  if (process.platform !== 'darwin') {
+    console.info('[auto-mac] skipped: requires macOS');
+    return;
+  }
+
   context.subscriptions.push(
     vscode.commands.registerCommand('auto-mac.draft', draftCommand),
     vscode.commands.registerCommand('auto-mac.dryRun', dryRunCommand),

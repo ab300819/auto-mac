@@ -1,0 +1,9 @@
+{
+  "id": "auto-mac",
+  "name": "Auto Mac",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Markdown → Mail.app 草稿 / Apple Notes（仅 macOS）",
+  "author": "auto-mac",
+  "isDesktopOnly": true
+}

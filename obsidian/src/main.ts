@@ -11,6 +11,11 @@ export default class AutoMacPlugin extends Plugin {
   settings: AutoMacSettings = DEFAULT_SETTINGS;
 
   async onload(): Promise<void> {
+    if (process.platform !== 'darwin') {
+      console.info('[auto-mac] skipped: requires macOS');
+      return;
+    }
+
     await this.loadSettings();
 
     // Commands
